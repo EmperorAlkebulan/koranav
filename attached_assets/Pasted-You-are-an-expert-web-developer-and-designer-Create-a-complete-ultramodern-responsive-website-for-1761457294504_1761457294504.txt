@@ -1,0 +1,65 @@
+You are an expert web developer and designer. Create a complete, ultramodern, responsive website for my logistics and supply chain software startup — **KoraNav**.
+
+**Company Overview:**
+KoraNav is a digital supply chain and logistics innovation startup developing intelligent software systems that transform healthcare and enterprise supply chains. Our flagship product, **Severus-WMS**, is a next-generation Warehouse Management System (WMS) designed for resilience, transparency, and automation — starting with healthcare logistics and expanding across industries.
+
+**Core Products:**
+1. **Severus-WMS** — A warehouse management system for real-time inventory tracking, order fulfilment, role-based dashboards, and AI-driven analytics.
+2. **KoraNav Analytics** — A platform for predictive insights, ERP integration, and demand forecasting (coming soon).
+3. **KoraNav Connect** — A collaboration and interoperability hub for digital logistics ecosystems (coming soon).
+
+**Mission:**
+To unify and digitize fragmented supply chains through innovative, secure, and intelligent software solutions that enhance operational efficiency and resilience.
+
+**Design Requirements:**
+- Sleek, **ultramodern UI** — think Apple + Tesla meets enterprise tech.
+- Dark mode default with vibrant accent colours inspired by the KoraNav logo (teal, navy blue, and a hint of orange).
+- Smooth **scroll-based animations** using Framer Motion.
+- Use **Tailwind CSS** and **Next.js / React**.
+- Include subtle geometric or fluid background patterns symbolizing connectivity, data flow, and logistics.
+- All sections should have a clean, balanced layout with clear CTAs.
+
+**Website Sections:**
+1. **Hero Section**
+   - KoraNav logo and tagline: “Navigating the Future of Supply Chain Intelligence.”
+   - A short paragraph about the startup’s mission.
+   - CTA buttons: “Explore Severus-WMS” and “Contact Us.”
+
+2. **About Section**
+   - Story behind KoraNav and Severus-WMS.
+   - Founder’s vision for digital transformation in healthcare and enterprise logistics.
+
+3. **Product Showcase**
+   - Interactive cards for Severus-WMS, KoraNav Analytics, and KoraNav Connect.
+   - Each card with a mini description and “Learn More” button.
+
+4. **Features Section**
+   - Icons and short blurbs highlighting:
+     - Real-time inventory tracking
+     - AI-driven analytics
+     - ERP interoperability
+     - Automated workflows
+     - Role-based dashboards
+     - Cloud resilience and security
+
+5. **Vision Section**
+   - Quote or statement from the founder:
+     “Our vision is simple: a unified supply chain that reduces waste, improves efficiency, and strengthens patient care.”
+
+6. **Contact / Collaboration Section**
+   - Invite innovators, digital health, and logistics professionals to collaborate.
+   - Contact form and social links.
+
+7. **Footer**
+   - KoraNav logo, copyright, social icons.
+
+**Technical Details:**
+- Use `Next.js` with `TypeScript` and `Tailwind CSS`.
+- Use `Framer Motion` for subtle animation.
+- Use clean modular components.
+- Include a favicon using the KoraNav logo.
+- Optimize for SEO (meta tags, OpenGraph, structured data).
+- Mobile-first responsive design.
+
+**Output Format:**
+Generate the complete code for the website including all components, pages, and styling. Begin with the folder structure, then render the landing page content with placeholder text and images (logo provided as reference for colour theme).
