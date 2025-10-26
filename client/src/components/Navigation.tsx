@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import logoImage from "@assets/IMG_7826_1761458161898.png";
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,14 +23,17 @@ export default function Navigation() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/70 rounded-md flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">KN</span>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              KoraNav
-            </span>
-          </div>
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            data-testid="link-logo"
+          >
+            <img 
+              src={logoImage} 
+              alt="KoraNav Logo" 
+              className="h-10 w-auto"
+            />
+          </button>
 
           <nav className="hidden md:flex items-center gap-8">
             <button

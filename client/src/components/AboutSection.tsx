@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Target, Users, Lightbulb } from "lucide-react";
+import logoImage from "@assets/IMG_7826_1761458161898.png";
 
 export default function AboutSection() {
   const ref = useRef(null);
@@ -54,23 +55,12 @@ export default function AboutSection() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="relative"
           >
-            <div className="aspect-video rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 border border-border flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 opacity-30">
-                <div className="grid grid-cols-8 grid-rows-8 h-full w-full">
-                  {Array.from({ length: 64 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="border border-primary/20"
-                      style={{
-                        animationDelay: `${i * 0.05}s`,
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="relative z-10 text-center p-8">
-                <div className="text-6xl font-bold text-primary/40">KN</div>
-              </div>
+            <div className="aspect-video rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 border border-border flex items-center justify-center overflow-hidden p-12">
+              <img 
+                src={logoImage} 
+                alt="KoraNav Logo" 
+                className="w-full h-auto max-w-md opacity-90"
+              />
             </div>
           </motion.div>
         </div>
