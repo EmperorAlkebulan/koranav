@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin, Phone, Linkedin, Twitter, Github } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function ContactSection() {
   const ref = useRef(null);
@@ -18,14 +20,29 @@ export default function ContactSection() {
     message: "",
   });
 
+  const submitMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      return await apiRequest("POST", "/api/contact", data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for reaching out. We'll get back to you soon.",
+      });
+      setFormData({ name: "", email: "", company: "", message: "" });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for reaching out. We'll get back to you soon.",
-    });
-    setFormData({ name: "", email: "", company: "", message: "" });
+    submitMutation.mutate(formData);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -71,6 +88,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   placeholder="John Doe"
                   required
+                  disabled={submitMutation.isPending}
                   data-testid="input-name"
                 />
               </div>
@@ -87,6 +105,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   placeholder="john@company.com"
                   required
+                  disabled={submitMutation.isPending}
                   data-testid="input-email"
                 />
               </div>
@@ -101,6 +120,7 @@ export default function ContactSection() {
                   value={formData.company}
                   onChange={handleChange}
                   placeholder="Your Company"
+                  disabled={submitMutation.isPending}
                   data-testid="input-company"
                 />
               </div>
@@ -117,12 +137,19 @@ export default function ContactSection() {
                   placeholder="Tell us about your supply chain challenges..."
                   rows={5}
                   required
+                  disabled={submitMutation.isPending}
                   data-testid="input-message"
                 />
               </div>
 
-              <Button type="submit" size="lg" className="w-full" data-testid="button-submit-contact">
-                Send Message
+              <Button 
+                type="submit" 
+                size="lg" 
+                className="w-full" 
+                disabled={submitMutation.isPending}
+                data-testid="button-submit-contact"
+              >
+                {submitMutation.isPending ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </motion.div>
