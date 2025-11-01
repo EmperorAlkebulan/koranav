@@ -1,0 +1,126 @@
+The Netlify deploy errored, with the following guidance provided:
+
+Diagnosis
+- The build fails because Netlify runs the command configured in netlify.toml: "npm run build:frontend" but npm reports that the script "build:frontend" does not exist. See the error lines: [line 59-64](#L59-L64) and the failing command reference at [line 70-74](#L70-L74). Netlify also shows the configured build command from the resolved config at [line 76-83](#L76-L83).
+- Vite was detected in the environment ([line 31](#L31)), so the project likely needs a Vite build command, but Netlify is calling a non-existent npm script.
+
+Cause
+- netlify.toml (or Netlify build settings) specifies npm run build:frontend, but package.json in the repo does not define a "build:frontend" script. Netlify therefore fails immediately with "Missing script: 'build:frontend'".
+
+Solution
+1. Verify what scripts exist in package.json
+   - Inspect your package.json in the repo to see available scripts: https://github.com/EmperorAlkebulan/koranav/blob/main/package.json
+   - Locally you can run: npm run to list scripts.
+
+2. Apply one of these fixes (choose the one that matches your project intent) and commit the change.
+
+   Option A — Add a build:frontend script to package.json (recommended if you want to keep netlify.toml unchanged)
+   - Edit package.json and add a "build:frontend" script. For a Vite app a typical script is "vite build". Example snippet to add inside "scripts":
+```json
+{
+  "scripts": {
+    "build:frontend": "vite build",
+    "build": "vite build" /* keep or adapt existing scripts as needed */
+  }
+}
+```
+   - Commit and push. Then Netlify's "npm run build:frontend" will succeed if vite build is correct.
+   - Test locally: npm run build:frontend
+
+   Option B — Change the Netlify build command to an existing script (recommended if package.json already has a different build script)
+   - Open netlify.toml in your repo: https://github.com/EmperorAlkebulan/koranav/blob/main/netlify.toml
+   - Replace the build.command value with a script that exists (for example "npm run build" or directly "vite build"). Example change:
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist" # adjust publish dir to match your build output
+```
+   - Commit and push. Netlify will run that command on the next deploy.
+
+3. Ensure Netlify's publish directory matches your build output
+   - Vite's default output folder is "dist". Your netlify.toml currently publishes "dist/public" ([line 82](#L82)). Verify your build actually produces dist/public or change publish to the correct folder (e.g., "dist") in netlify.toml.
+
+4. Re-deploy on Netlify
+   - After committing the changes, trigger a deploy. If you added the script, run it locally first to confirm there are no other build errors.
+
+If you want, paste the current "scripts" section from package.json and I'll suggest the exact change to make.
+
+The relevant error logs are:
+
+Line 0: build-image version: 2cae3ca905d202880257fd373e72986bf1b632fd (noble)
+Line 1: buildbot version: 0d1bfc5e5e409698057f2f06d53a52fa43dbfeba
+Line 2: Fetching cached dependencies
+Line 3: Failed to fetch cache, continuing with build
+Line 4: Starting to prepare the repo for build
+Line 5: No cached dependencies found. Cloning fresh repo
+Line 6: git clone --filter=blob:none https://github.com/EmperorAlkebulan/koranav
+Line 7: Preparing Git Reference refs/heads/main
+Line 8: Custom build command detected. Proceeding with the specified command: 'npm run build:frontend'
+Line 9: Starting to install dependencies
+Line 10: Downloading and installing node v20.19.5...
+Line 11: Downloading https://nodejs.org/dist/v20.19.5/node-v20.19.5-linux-x64.tar.xz...
+Line 12: Computing checksum with sha256sum
+Line 13: Checksums matched!
+Line 23: Installing npm packages using npm version 10.8.2
+Line 24: npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+Line 25: npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+Line 26: added 478 packages in 5s
+Line 27: npm packages installed
+Line 28: Successfully installed dependencies
+Line 29: Starting build script
+Line 30: Detected 1 framework(s)
+Line 31: "vite" at version "5.4.20"
+Line 32: Section completed: initializing
+Line 33: Failed during stage 'building site': Build script returned non-zero exit code: 2
+Line 34: [96m[1m​[22m[39m
+Line 35: [96m[1mNetlify Build                                                 [22m[39m
+Line 36: [96m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 37: [36m[1m​[22m[39m
+Line 38: [36m[1m❯ Version[22m[39m
+Line 39:   @netlify/build 35.2.11
+Line 40: [36m[1m​[22m[39m
+Line 41: [36m[1m❯ Flags[22m[39m
+Line 42:   accountId: 6905d1306c45b171cf663095
+Line 43:   baseRelDir: true
+Line 50: [36m[1m❯ Config file[22m[39m
+Line 51:   /opt/build/repo/netlify.toml
+Line 52: [36m[1m​[22m[39m
+Line 53: [36m[1m❯ Context[22m[39m
+Line 54:   production
+Line 55: [96m[1m​[22m[39m
+Line 56: [96m[1mbuild.command from netlify.toml                               [22m[39m
+Line 57: [96m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 58: ​
+Line 59: [36m$ npm run build:frontend[39m
+Line 60: npm error Missing script: "build:frontend"
+Line 61: npm error
+Line 62: npm error To see a list of scripts, run:
+Line 63: npm error   npm run
+Line 64: npm error A complete log of this run can be found in: /opt/buildhome/.npm/_logs/2025-11-01T16_59_13_328Z-debug-0.log
+Line 65: [91m[1m​[22m[39m
+Line 66: [91m[1m"build.command" failed                                        [22m[39m
+Line 67: [91m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 68: ​
+Line 69:   [31m[1mError message[22m[39m
+Line 70:   Command failed with exit code 1: npm run build:frontend
+Line 71: ​
+Line 72:   [31m[1mError location[22m[39m
+Line 73:   In build.command from netlify.toml:
+Line 74:   npm run build:frontend
+Line 75: ​
+Line 76:   [31m[1mResolved config[22m[39m
+Line 77:   build:
+Line 78:     command: npm run build:frontend
+Line 79:     commandOrigin: config
+Line 80:     environment:
+Line 81:       - NODE_VERSION
+Line 82:     publish: /opt/build/repo/dist/public
+Line 83:     publishOrigin: config
+Line 84:   headers:
+Line 85:     - for: /*
+      values:
+        Permissions-Policy: geolocation=(), microphone=(), camera=()
+        Referrer-Policy: strict
+Line 86: Build failed due to a user error: Build script returned non-zero exit code: 2
+Line 87: Failing build: Failed to build site
+Line 88: Finished processing build request in 14.212s
