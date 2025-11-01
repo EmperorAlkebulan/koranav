@@ -1,0 +1,136 @@
+The Netlify deploy errored, with the following guidance provided:
+
+Diagnosis
+
+- Relevant error lines: build failed ([line 69](#L69)), the Rollup/Vite error says it "Could not resolve entry module 'index.html'" ([line 71](#L71)), and the Netlify build command that failed is shown ([line 85](#L85)). The Netlify publish directory is set to dist/public ([line 94](#L94)).
+- Error type and cause: Vite/Rollup cannot find the HTML entry file. Vite expects an index.html at the project root (or the configured Vite root). This error means either:
+  - index.html is missing or not committed to the repo, or
+  - index.html is located in a different folder (e.g. public/ or src/) and Vite’s root/outDir are not configured to point to it (so Vite fails to resolve the entry).
+
+Solution
+
+1) Verify the file is present and committed
+- Confirm that an index.html exists in your repository and was committed. If it lives in a subfolder, note its path (for example public/index.html). If it's missing, add and commit it to the repo.
+
+2) Pick one fix depending on your project layout
+
+A — index.html is in the repository root (recommended)
+- If index.html is at the repo root, no special Vite config is required. Ensure it’s committed and then re-run the build:
+  - Locally: npm install && npx vite build
+  - On Netlify: retry deploy
+
+B — index.html lives in a subfolder (e.g. public/)
+- Option 1: Move index.html to the repo root (simplest).
+- Option 2: Tell Vite where to find the HTML and where to output so it matches Netlify’s publish path. Example: if your index.html is at public/index.html and you want the final files in dist/public (so Netlify’s publish = dist/public is correct), add or update vite.config.js like this:
+
+```js
+// vite.config.js
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  root: 'public',               // folder containing index.html
+  build: {
+    outDir: '../dist/public',   // relative to root: writes to <repo>/dist/public
+    emptyOutDir: true
+  }
+})
+```
+
+- With this config, running npx vite build will use public/index.html as the entry and output to dist/public (matching your Netlify publish path shown in the logs [line 94](#L94)).
+
+C — Alternative: keep Vite root but set rollup input
+- If you prefer to keep root as project root, you can point the Rollup input to a non-root HTML, for example:
+
+```js
+// vite.config.js
+import { defineConfig } from 'vite'
+import { resolve } from 'path'
+
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'public/index.html')
+      }
+    },
+    outDir: 'dist/public'
+  }
+})
+```
+
+3) Ensure Netlify publish path matches the Vite outDir
+- Your current Netlify resolved publish path is /opt/build/repo/dist/public ([line 94](#L94)). Either:
+  - Keep Netlify publish = "dist/public" and configure Vite to output to dist/public (examples above), or
+  - Change netlify.toml publish to "dist" (or whatever you use) if Vite outputs to dist.
+
+4) Re-run the build
+- Test locally: npm install && npx vite build — fix any errors locally first.
+- Push the changes and redeploy on Netlify.
+
+Why this fixes it
+- The error in the logs explicitly shows Vite/Rollup could not resolve the entry "index.html" ([line 71](#L71)), so making sure index.html exists at the expected path or configuring Vite to look in the correct folder resolves the entry resolution failure and lets the build proceed.
+
+If you still see Node version complaints or mismatches, update Netlify’s Node version per the docs: https://docs.netlify.com/configure-builds/manage-dependencies/#node-js-and-javascript
+
+The relevant error logs are:
+
+Line 0: buildbot version: 0d1bfc5e5e409698057f2f06d53a52fa43dbfeba
+Line 1: build-image version: 2cae3ca905d202880257fd373e72986bf1b632fd (noble)
+Line 2: Fetching cached dependencies
+Line 3: Failed to fetch cache, continuing with build
+Line 4: Starting to prepare the repo for build
+Line 5: No cached dependencies found. Cloning fresh repo
+Line 6: git clone --filter=blob:none https://github.com/EmperorAlkebulan/koranav
+Line 7: Preparing Git Reference refs/heads/main
+Line 8: Starting to install dependencies
+Line 9: Downloading and installing node v20.19.5...
+Line 10: Downloading https://nodejs.org/dist/v20.19.5/node-v20.19.5-linux-x64.tar.xz...
+Line 11: Computing checksum with sha256sum
+Line 12: Checksums matched!
+Line 13: Now using node v20.19.5 (npm v10.8.2)
+Line 59: 64 packages are looking for funding
+Line 60:   run `npm fund` for details
+Line 61: 8 vulnerabilities (3 low, 5 moderate)
+Line 62: To address issues that do not require attention, run:
+Line 63:   npm audit fix
+Line 64: To address all issues (including breaking changes), run:
+Line 65:   npm audit fix --force
+Line 66: Run `npm audit` for details.
+Line 67: [36mvite v5.4.20 [32mbuilding for production...[36m[39m
+Line 68: [32m✓[39m 0 modules transformed.
+Line 69: [31mx[39m Build failed in 10ms
+Line 70: [31merror during build:
+Line 71: [31mCould not resolve entry module "index.html".[31m
+Line 72:     at getRollupError (file:///opt/build/repo/node_modules/rollup/dist/es/shared/parseAst.js:396:41)
+Line 73:     at error (file:///opt/build/repo/node_modules/rollup/dist/es/shared/parseAst.js:392:42)
+Line 74:     at ModuleLoader.loadEntryModule (file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:20086:20)
+Line 75:     at async Promise.all (index 0)[39m
+Line 76: [91m[1m​[22m[39m
+Line 77: [91m[1m"build.command" failed                                        [22m[39m
+Line 78: [91m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 79: ​
+Line 80:   [31m[1mError message[22m[39m
+Line 81:   Command failed with exit code 1: npm install && npx vite build
+Line 82: ​
+Line 83:   [31m[1mError location[22m[39m
+Line 84:   In build.command from netlify.toml:
+Line 85:   npm install && npx vite build
+Line 86: ​
+Line 87:   [31m[1mResolved config[22m[39m
+Line 88:   build:
+Line 89:     command: npm install && npx vite build
+Line 90:     commandOrigin: config
+Line 91:     environment:
+Line 92:       - NODE_VERSION
+Line 93:       - NETLIFY_TELEMETRY_DISABLED
+Line 94:     publish: /opt/build/repo/dist/public
+Line 95:     publishOrigin: config
+Line 96:   headers:
+Line 97:     - for: /*
+      values:
+        Permissions-Policy: geolocation=(), microphone=(), camera=()
+        Referrer-Policy: strict
+Line 98: Build failed due to a user error: Build script returned non-zero exit code: 2
+Line 99: Failed during stage 'building site': Build script returned non-zero exit code: 2
+Line 100: Failing build: Failed to build site
+Line 101: Finished processing build request in 18.275s
