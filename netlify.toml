@@ -1,7 +1,7 @@
 # Netlify Configuration for KoraNav Frontend
 [build]
-  # Build command to compile the React application
-  command = "npm run build:frontend"
+  # Build command to compile the React application (frontend only)
+  command = "npx vite build"
   # Directory to publish (contains compiled HTML, CSS, JS)
   publish = "dist/public"
   # Node version
