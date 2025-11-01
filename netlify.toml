@@ -1,11 +1,15 @@
 # Netlify Configuration for KoraNav Frontend
 [build]
   # Build command to compile the React application (frontend only)
-  command = "npx vite build"
+  command = "npm install && npx vite build"
   # Directory to publish (contains compiled HTML, CSS, JS)
   publish = "dist/public"
-  # Node version
-  environment = { NODE_VERSION = "20" }
+
+[build.environment]
+  # Specify Node.js version
+  NODE_VERSION = "20"
+  # Disable telemetry during build
+  NETLIFY_TELEMETRY_DISABLED = "1"
 
 # Redirect all routes to index.html for client-side routing
 [[redirects]]
