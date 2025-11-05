@@ -141,10 +141,10 @@ export default function ContactSection() {
                 <div>
                   <h4 className="font-semibold mb-1">Email</h4>
                   <a
-                    href="mailto:info@koranav.com"
+                    href="mailto:ahmedtejankella@koranav.online"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    info@koranav.com
+                    ahmedtejankella@koranav.online
                   </a>
                 </div>
               </div>
@@ -156,10 +156,10 @@ export default function ContactSection() {
                 <div>
                   <h4 className="font-semibold mb-1">Phone</h4>
                   <a
-                    href="tel:+1234567890"
+                    href="tel:+447555052535"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    +1 (234) 567-890
+                    +44 7555 052535
                   </a>
                 </div>
               </div>
