@@ -169,11 +169,11 @@ export default function ContactSection() {
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">Location</h4>
+                  <h4 className="font-semibold mb-1">Locations</h4>
                   <p className="text-muted-foreground">
-                    San Francisco, CA
+                    London, United Kingdom
                     <br />
-                    United States
+                    Dubai, United Arab Emirates
                   </p>
                 </div>
               </div>
